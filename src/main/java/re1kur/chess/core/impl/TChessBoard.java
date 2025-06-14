@@ -1,10 +1,16 @@
 package re1kur.chess.core.impl;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class TChessBoard {
     private final Map<String, TChessField> fields = new HashMap<>();
+    @Getter
+    @Setter
+    private TChessMove lastMove;
 
     public TChessBoard() {
         for (char col = 'a'; col <= 'h'; col++) {
@@ -18,4 +24,5 @@ public class TChessBoard {
     public TChessField getField(char col, char row) {
         return fields.get("" + col + row);
     }
+
 }

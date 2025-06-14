@@ -75,4 +75,20 @@ public class RookTest {
         Rook rook = new Rook(board.getField('a', '1'), ESide.WHITE, board);
         assertNull(rook.goToPosition(board.getField('a', '1')));
     }
+
+    @Test
+    public void testRookMoveToTopRightCorner() {
+        Rook rook = new Rook(board.getField('a', '1'), ESide.WHITE, board);
+        TChessMove move = rook.goToPosition(board.getField('h', '1'));
+        assertNotNull(move);
+        assertEquals("Ra1-h1", move.asString());
+    }
+
+    @Test
+    public void testRookMoveToTopLeftCorner() {
+        Rook rook = new Rook(board.getField('h', '8'), ESide.WHITE, board);
+        TChessMove move = rook.goToPosition(board.getField('a', '8'));
+        assertNotNull(move);
+        assertEquals("Rh8-a8", move.asString());
+    }
 }

@@ -33,5 +33,4 @@ public class ChessTest {
         TChessMove move = new TChessMove(rook, board.getField('a', '1'), board.getField('a', '3'), true);
         assertEquals("Ra1xa3", move.asString());
     }
-
 }

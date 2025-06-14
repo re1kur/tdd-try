@@ -30,7 +30,9 @@ public class Rook extends TChessman {
         target.setOccupiedBy(this);
         position = target;
 
-        return new TChessMove(this, from, target, capture);
+        TChessMove move = new TChessMove(this, from, target, capture);
+        board.setLastMove(move);
+        return move;
     }
 
     private boolean isPathClear(TChessField target) {

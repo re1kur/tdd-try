@@ -14,6 +14,8 @@ public class Pawn extends TChessman {
 
     @Override
     public TChessMove goToPosition(TChessField target) {
+        if (target == null) return null;
+
         int direction = (side == ESide.WHITE) ? 1 : -1;
         int rowDiff = target.getRow() - position.getRow();
         int colDiff = target.getCol() - position.getCol();
@@ -28,16 +30,43 @@ public class Pawn extends TChessman {
         boolean isCapture = Math.abs(colDiff) == 1 && rowDiff == direction &&
                             target.isBusy() != null && target.isBusy().side != this.side;
 
+        boolean enPassant = false;
+        if (Math.abs(colDiff) == 1 && rowDiff == direction && target.isBusy() == null) {
+            TChessMove lastMove = board.getLastMove();
+            if (lastMove != null && lastMove.piece instanceof Pawn) {
+                int lastRowDiff = lastMove.to.getRow() - lastMove.from.getRow();
+                if (Math.abs(lastRowDiff) == 2 &&
+                    lastMove.to.getCol() == target.getCol() &&
+                    lastMove.to.getRow() == position.getRow()) {
+                    isCapture = true;
+                    enPassant = true;
+                    board.getField(lastMove.to.getCol(), lastMove.to.getRow()).setOccupiedBy(null);
+                }
+            }
+        }
+
         if (isForward || isDoubleStep || isCapture) {
             TChessField from = position;
-            boolean capture = target.isBusy() != null;
+            boolean promotion = (side == ESide.WHITE && target.getRow() == '8') ||
+                                (side == ESide.BLACK && target.getRow() == '1');
 
             position.setOccupiedBy(null);
-            target.setOccupiedBy(this);
-            position = target;
-
-            return new TChessMove(this, from, target, capture);
+            if (promotion) {
+                target.setOccupiedBy(new Queen(target, side, board));
+                position = target;
+                TChessMove move = new TChessMove(this, from, target, isCapture, true, false);
+                board.setLastMove(move);
+                return move;
+            }
+            else {
+                target.setOccupiedBy(this);
+                position = target;
+                TChessMove move = new TChessMove(this, from, target, isCapture, false, enPassant);
+                board.setLastMove(move);
+                return move;
+            }
         }
+
         return null;
     }
 }
